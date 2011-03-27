@@ -29,6 +29,12 @@ function install_prerequisites()
     sudo apt-get install bzr cmake compiz-dev gnome-common libbamf-dev libboost-dev libboost-serialization-dev libcairo2-dev libdbusmenu-glib-dev libdee-dev libgconf2-dev libgdk-pixbuf2.0-dev libglew1.5-dev libglewmx1.5-dev libglib2.0-dev libindicator-dev libpango1.0-dev libpcre3-dev libsigc++-2.0-dev libunity-misc-dev libutouch-geis-dev
 }
 
+function launch()
+{
+   export PATH="${installprefix}/bin:${PATH}"
+   compiz --replace &
+}
+
 function clone()
 {
    # Nux
@@ -119,19 +125,20 @@ function pull()
 function print_usage()
 {
    echo "Usage:"
-   echo "$0 env|make|build|pull|clone|run|prerequisites [nux|unity]"
+   echo "$0 clone|configure|make|pull|prerequisites|run [nux|unity]"
    echo ""
+   echo "clone         - bzr clone each of the necessary repositories"
    echo "configure     - Build the code (runs autogen, make, make install)"
    echo "make          - Rebuild the code (runs make, make install)"
    echo "pull          - bzr pull each of the repositories"
-   echo "clone         - bzr clone each of the necessary repositories"
    echo "prerequisites - Install ubuntu pre-requisites"
+   echo "run           - Launch the local Unity build"
    echo ""
    echo "To get started run: "
    echo "$0 prerequisites"
    echo "$0 clone"
    echo "$0 configure"
-   echo "$0 make"
+   echo "$0 run"
 }
 
 
@@ -159,9 +166,9 @@ then
    fi
 
    # handle the input argument
-   if [ "$1" == "env" ]
+   if [ "$1" == "run" ]
    then
-      echo "source this script via 'source $0' to setup your environment"
+      launch
    elif [ "$1" == "pull" ]
    then
       pull
