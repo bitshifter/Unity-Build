@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # This builds and installs Unity. Also includes setup for Ubuntu Natty
+# See http://askubuntu.com/questions/28470/how-do-i-build-unity-from-source/28472#28472
 
 # Change this to where you want everything installed:
 installprefix=/opt/unity
@@ -21,7 +22,7 @@ function unset_env()
 
 function install_prerequisites()
 {
-   sudo apt-get install bzr libglib2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpng12-dev libglew1.5-dev  libglewmx1.5-dev libxxf86vm-dev libgl1-mesa-dev libsigc++-2.0-dev libpango1.0-dev doxygen cmake build-essential debhelper pkg-config valac intltool libgee-dev libunique-dev libclutter-1.0-dev libclutter-gtk-0.10-dev libclutk-dev libbamf-dev gsettings-desktop-schemas-dev libgconf2-dev  libglib2.0-dev libdbusmenu-glib-dev libgnome-desktop-dev libgtk2.0-dev libpango1.0-dev libgnomeui-dev libdee-dev libindicator-dev  libunity-misc-dev libutouch-grail-dev libxcb-icccm1-dev compizconfig-settings-manager compiz-dev libboost-dev libboost-serialization-dev libmetacity-dev python-dev cython gnome-common libpcre3-dev
+    sudo apt-get install bzr cmake compiz-dev gnome-common libbamf-dev libboost-dev libboost-serialization-dev libcairo2-dev libdbusmenu-glib-dev libdee-dev libgconf2-dev libgdk-pixbuf2.0-dev libglew1.5-dev libglewmx1.5-dev libglib2.0-dev libindicator-dev libpango1.0-dev libpcre3-dev libsigc++-2.0-dev libunity-misc-dev libutouch-geis-dev
 }
 
 function clone()
