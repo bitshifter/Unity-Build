@@ -71,25 +71,25 @@ function configure()
    # have to build and install nux for unity to configure
    if [ "$nux" == "1" ]
    then
-   cd nux
-   ./autogen.sh --disable-documentation --prefix=$installprefix
-   cd ..
-   make_install_nux
+      cd nux
+      ./autogen.sh --disable-documentation --prefix=$installprefix
+      cd ..
+      make_install_nux
    fi
 
    if [ "$unity" == "1" ]
    then
-   set_env
-   cd unity
-   if [ ! -d build ]
-   then
-      mkdir build
-   fi
-   cd build
-   cmake .. -DCMAKE_BUILD_TYPE=Debug -DCOMPIZ_PLUGIN_INSTALL_TYPE=package -DCMAKE_INSTALL_PREFIX=$installprefix
-   cd ../..
-   unset_env
-   make_install_unity
+      set_env
+      cd unity
+      if [ ! -d build ]
+      then
+         mkdir build
+      fi
+      cd build
+      cmake .. -DCMAKE_BUILD_TYPE=Debug -DCOMPIZ_PLUGIN_INSTALL_TYPE=local -DCMAKE_INSTALL_PREFIX=$installprefix
+      cd ../..
+      unset_env
+      make_install_unity
    fi
 }
 
@@ -103,16 +103,16 @@ function pull()
 {
    if [ "$nux" == "1" ]
    then
-   cd nux
-   bzr pull
-   cd ..
+      cd nux
+      bzr pull
+      cd ..
    fi
 
    if [ "$unity" == "1" ]
    then
-   cd unity
-   bzr pull
-   cd ..  
+      cd unity
+      bzr pull
+      cd ..  
    fi
 }
 
