@@ -6,6 +6,10 @@
 # Change this to where you want everything installed:
 installprefix=/opt/unity
 
+# flag to update nux and or unity
+nux=1
+unity=1
+
 function set_env()
 {
    export PKG_CONFIG_PATH=$installprefix/lib/pkgconfig:${PKG_CONFIG_PATH}
@@ -34,17 +38,48 @@ function clone()
    bzr branch lp:unity
 }
 
+function make_install_nux()
+{
+   if [ "$nux" == "1" ]
+   then
+      cd nux
+      make -j4 && sudo make -j4 install
+      cd ..
+   fi
+}
+
+function make_install_unity()
+{
+   if [ "$unity" == "1" ]
+   then
+      set_env
+      cd unity/build
+      make -j4 && sudo make -j4 install
+      if [ ! -d $installprefix/share/unity/places ]
+      then
+         sudo mkdir $installprefix/share/unity/places
+      fi
+      sudo cp /usr/share/unity/places/* $installprefix/share/unity/places/
+      cd ../..
+      unset_env
+   fi
+
+}
+
 function configure()
 {
    # have to build and install nux for unity to configure
+   if [ "$nux" == "1" ]
+   then
    cd nux
    ./autogen.sh --disable-documentation --prefix=$installprefix
-   make
-   sudo make install
    cd ..
+   make_install_nux
+   fi
 
+   if [ "$unity" == "1" ]
+   then
    set_env
-
    cd unity
    if [ ! -d build ]
    then
@@ -52,45 +87,39 @@ function configure()
    fi
    cd build
    cmake .. -DCMAKE_BUILD_TYPE=Debug -DCOMPIZ_PLUGIN_INSTALL_TYPE=package -DCMAKE_INSTALL_PREFIX=$installprefix
-   make
-   sudo make install
    cd ../..
-
    unset_env
+   make_install_unity
+   fi
 }
 
 function makemakeinstall()
 {
-   cd nux
-   make
-   sudo make install
-   cd ..
-
-   set_env
-
-   cd unity/build
-   make
-   make install
-   cd ../..
-
-   unset_env
+   make_install_nux
+   make_install_unity
 }
 
 function pull()
 {
+   if [ "$nux" == "1" ]
+   then
    cd nux
    bzr pull
    cd ..
+   fi
 
+   if [ "$unity" == "1" ]
+   then
    cd unity
    bzr pull
    cd ..  
+   fi
 }
 
 function print_usage()
 {
    echo "Usage:"
-   echo "$0 [env|make|build|pull|clone|run|prerequisites]"
+   echo "$0 env|make|build|pull|clone|run|prerequisites [nux|unity]"
    echo ""
    echo "configure     - Build the code (runs autogen, make, make install)"
    echo "make          - Rebuild the code (runs make, make install)"
@@ -113,11 +142,20 @@ then
    set -e # exit script if anything fails
    #set -x # enable debugging
 
-   # print usage if we don't have 1 argument
-   if [ $# -ne 1 ]
+   # print usage if no arguments
+   if [ $# -eq 0 ]
    then
       print_usage `basename $0`
       exit 1
+   fi
+
+   # check if only nux or unity should be updated
+   if [ "$2" == "unity" ]
+   then
+      nux="0"
+   elif [ "$2" == "nux" ]
+   then
+      unity="0"
    fi
 
    # handle the input argument
